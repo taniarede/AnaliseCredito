@@ -1,0 +1,64 @@
+### Ficheiro para testar a API a partir do VS Code (extensão "REST Client")
+### Clique em "Send Request" por cima de cada pedido.
+
+@api = http://localhost:5080
+
+### Cenário A - esperado: APROVADO
+POST {{api}}/api/pedidos
+Content-Type: application/json
+
+{
+  "nif": "123456789", "idade": 35, "rendimentoMensalLiquido": 2500, "prestacoesAtuais": 200,
+  "valorPretendido": 10000, "prazoMeses": 60, "situacaoProfissional": "Efetivo", "incidentesCredito": false
+}
+
+### Cenário B - esperado: ANÁLISE MANUAL
+POST {{api}}/api/pedidos
+Content-Type: application/json
+
+{
+  "nif": "123456789", "idade": 42, "rendimentoMensalLiquido": 2000, "prestacoesAtuais": 500,
+  "valorPretendido": 20000, "prazoMeses": 48, "situacaoProfissional": "ContratoPrazo", "incidentesCredito": false
+}
+
+### Cenário C - esperado: RECUSADO (incidentes) - como simulação
+POST {{api}}/api/simulacoes
+Content-Type: application/json
+
+{
+  "nif": "123456789", "idade": 40, "rendimentoMensalLiquido": 3000, "prestacoesAtuais": 300,
+  "valorPretendido": 15000, "prazoMeses": 72, "situacaoProfissional": "Efetivo", "incidentesCredito": true
+}
+
+### Cenário D - esperado: RECUSADO (taxa > 50%) + motivo de montante > 20x - como simulação
+POST {{api}}/api/simulacoes
+Content-Type: application/json
+
+{
+  "nif": "123456789", "idade": 30, "rendimentoMensalLiquido": 1200, "prestacoesAtuais": 300,
+  "valorPretendido": 25000, "prazoMeses": 36, "situacaoProfissional": "Efetivo", "incidentesCredito": false
+}
+
+### Pedido inválido - vários erros de uma vez (cada erro indica o "campo")
+POST {{api}}/api/pedidos
+Content-Type: application/json
+
+{
+  "nif": "12345", "idade": 16, "rendimentoMensalLiquido": null, "prestacoesAtuais": 200,
+  "valorPretendido": 10000, "prazoMeses": 0, "situacaoProfissional": "Efetivo", "incidentesCredito": false
+}
+
+### Listar os últimos pedidos
+GET {{api}}/api/pedidos?top=20
+
+### Detalhe de um pedido
+GET {{api}}/api/pedidos/1
+
+### Pedidos à espera de decisão do analista
+GET {{api}}/api/analise-manual/pendentes
+
+### Decisão do analista (o pedido 2 é o Cenário B, em ANÁLISE MANUAL nos dados de exemplo)
+POST {{api}}/api/analise-manual/2/decisao
+Content-Type: application/json
+
+{ "novoEstado": "Aprovado", "utilizador": "Maria Santos", "observacao": "Contrato renovado há 3 anos; comprovativos validados." }
