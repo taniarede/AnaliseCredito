@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csdevkit",
+    "ms-mssql.mssql",
+    "ms-azuretools.vscode-docker",
+    "humao.rest-client",
+    "dbaeumer.vscode-eslint"
+  ]
+}

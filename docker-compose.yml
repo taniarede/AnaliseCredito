@@ -1,0 +1,20 @@
+# SQL Server 2022 (Microsoft) a correr dentro de um contentor Docker.
+# Arrancar:  docker compose up -d
+# Parar:     docker compose down        (os dados ficam guardados no volume)
+# Apagar tudo, incluindo dados:  docker compose down -v
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: analisecredito-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "AnaliseCredito#2026"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sqldata:

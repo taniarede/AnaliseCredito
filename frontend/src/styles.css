@@ -1,0 +1,217 @@
+/* =========================================================================
+   Análise de Pedidos de Crédito Pessoal - estilos
+   Mobile-first nos detalhes: funciona de 320px (telemóvel) a ecrãs largos.
+   ========================================================================= */
+:root {
+  --fundo: #f4f6f8;
+  --cartao: #ffffff;
+  --texto: #1d2733;
+  --texto-suave: #5b6776;
+  --borda: #dde3ea;
+  --primaria: #00508c;
+  --aprovado: #1b7f46;
+  --aprovado-fundo: #e5f4ea;
+  --manual: #a86200;
+  --manual-fundo: #fff2dd;
+  --recusado: #b3261e;
+  --recusado-fundo: #fbe7e5;
+  --invalido: #111111;
+  --invalido-fundo: #e4e6e9;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fundo);
+  -webkit-text-size-adjust: 100%;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.pagina { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+header h1 { margin: 0 0 20px; font-size: 1.6rem; line-height: 1.2; color: var(--primaria); }
+
+.colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+.cartao { background: var(--cartao); border: 1px solid var(--borda); border-radius: 10px; padding: 20px; min-width: 0; }
+.cartao h2 { margin: 0 0 16px; font-size: 1.15rem; }
+.cartao h3 { margin: 18px 0 8px; font-size: 0.95rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.03em; }
+.vazio { display: flex; align-items: center; justify-content: center; color: var(--texto-suave); min-height: 200px; }
+
+/* ---------- Formulário ---------- */
+.grelha { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.campo { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.campo small { color: var(--texto-suave); }
+.campo input, .campo select, .campo textarea {
+  font: inherit; padding: 9px 10px; min-height: 40px; border: 1px solid var(--borda); border-radius: 6px; background: #fff; width: 100%;
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: 2px solid var(--primaria); outline-offset: -1px; }
+.campo input.invalido, .campo select.invalido { border-color: var(--recusado); box-shadow: 0 0 0 1px var(--recusado); background: #fff8f7; }
+.campo-checkbox { flex-direction: row; align-items: center; gap: 8px; grid-column: 1 / -1; min-height: 40px; }
+.campo-checkbox input { width: 18px; height: 18px; min-height: 0; }
+
+.acoes { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+button { font: inherit; cursor: pointer; border-radius: 6px; padding: 8px 14px; min-height: 40px; border: 1px solid transparent; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+button:focus-visible { outline: 2px solid var(--primaria); outline-offset: 2px; }
+.botao-principal { background: var(--primaria); color: #fff; }
+.botao-secundario { background: #fff; border-color: var(--borda); color: var(--texto); }
+.botao-recusar { background: var(--recusado); color: #fff; }
+.botao-aprovar { background: var(--aprovado); color: #fff; }
+.ligacao { background: none; border: none; padding: 0; min-height: 0; color: var(--primaria); text-decoration: underline; }
+
+/* ---------- Cartão de resultado ---------- */
+.resultado { border-width: 2px; }
+.resultado-cabecalho { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.resultado-cabecalho h2 { font-size: 1.7rem; margin: 2px 0 0; }
+.resultado-cabecalho small { color: var(--texto-suave); }
+.selo { font-size: 0.75rem; text-transform: uppercase; color: var(--texto-suave); white-space: nowrap; }
+
+.resultado.estado-aprovado { border-color: var(--aprovado); }
+.resultado.estado-manual { border-color: var(--manual); }
+.resultado.estado-recusado { border-color: var(--recusado); }
+.resultado.estado-invalido { border-color: var(--invalido); }
+h2.estado-aprovado, .resultado.estado-aprovado h2 { color: var(--aprovado); }
+h2.estado-manual, .resultado.estado-manual h2 { color: var(--manual); }
+h2.estado-recusado, .resultado.estado-recusado h2 { color: var(--recusado); }
+h2.estado-invalido, .resultado.estado-invalido h2 { color: var(--invalido); }
+
+.motivos { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.motivos li { display: flex; gap: 8px; align-items: baseline; }
+.sem-motivos { color: var(--texto-suave); margin: 0; }
+
+.etiqueta { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.etiqueta.estado-aprovado { background: var(--aprovado-fundo); color: var(--aprovado); }
+.etiqueta.estado-manual { background: var(--manual-fundo); color: var(--manual); }
+.etiqueta.estado-recusado { background: var(--recusado-fundo); color: var(--recusado); }
+.etiqueta.estado-invalido { background: var(--invalido-fundo); color: var(--invalido); }
+.etiqueta-cenario { margin-left: 6px; background: #e6eef6; color: var(--primaria); }
+
+.indicadores { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+.indicadores div { background: var(--fundo); border-radius: 8px; padding: 10px 12px; }
+.indicadores dt { font-size: 0.8rem; color: var(--texto-suave); }
+.indicadores dd { margin: 2px 0 0; font-size: 1.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- Lista de pedidos ---------- */
+.lista-cabecalho { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+.lista-cabecalho h2 { margin: 0; }
+.tabela-pedidos { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tabela-pedidos th, .tabela-pedidos td { text-align: left; padding: 8px; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+.tabela-pedidos th { color: var(--texto-suave); font-weight: 600; }
+.tabela-pedidos td { font-variant-numeric: tabular-nums; }
+.simulacao { margin-left: 6px; color: var(--texto-suave); }
+
+.botao-regras {
+  display: inline-flex; align-items: center; gap: 4px; background: #fff; border: 1px solid var(--borda);
+  padding: 4px 8px; min-height: 36px;
+}
+.botao-regras .rotulo-regras { display: none; }
+.botao-regras .texto-detalhes { font-size: 0.85rem; color: var(--texto-suave); }
+.botao-regras:hover { border-color: var(--recusado); }
+.botao-regras .seta { font-size: 1.2rem; line-height: 1; color: var(--texto-suave); margin-left: 2px; }
+
+
+.erro { background: var(--recusado-fundo); color: var(--recusado); border: 1px solid var(--recusado); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 12px; }
+
+/* ---------- Janela deslizante (detalhes) ---------- */
+.gaveta-fundo {
+  position: fixed; inset: 0; background: rgba(17, 24, 39, 0.45); z-index: 50;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+.gaveta-fundo.aberta { opacity: 1; pointer-events: auto; }
+.gaveta {
+  position: absolute; top: 0; right: 0; height: 100%; width: min(440px, 100%);
+  background: var(--cartao); box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.25s ease;
+}
+.gaveta-fundo.aberta .gaveta { transform: translateX(0); }
+.gaveta-cabecalho { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 20px; border-bottom: 1px solid var(--borda); }
+.gaveta-cabecalho small { color: var(--texto-suave); }
+.gaveta-cabecalho h2 { margin: 2px 0 0; font-size: 1.4rem; }
+.botao-fechar { background: none; border: 1px solid var(--borda); font-size: 1.4rem; line-height: 1; width: 40px; padding: 0; }
+.gaveta-corpo { flex: 1; padding: 4px 20px 24px; overflow-y: auto; overscroll-behavior: contain; }
+.gaveta-decisao { border-top: 1px solid var(--borda); background: var(--manual-fundo); padding: 14px 20px 18px; display: flex; flex-direction: column; gap: 10px; }
+.gaveta-decisao h3 { margin: 0; font-size: 0.85rem; color: var(--manual); text-transform: uppercase; letter-spacing: 0.03em; }
+.gaveta-decisao .acoes { margin-top: 4px; }
+.gaveta-decisao .ajuda { color: var(--texto-suave); }
+.confirmacao { display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--borda); border-left: 4px solid var(--primaria); border-radius: 8px; padding: 12px 14px; }
+.confirmacao.confirmar-aprovar { border-left-color: var(--aprovado); }
+.confirmacao.confirmar-recusar { border-left-color: var(--recusado); }
+.confirmacao p { margin: 0; }
+.confirmacao-pergunta { font-weight: 700; font-size: 1.05rem; }
+.confirmacao-nota { color: var(--texto-suave); font-size: 0.85rem; }
+.confirmacao .lista-dados dd { text-align: left; font-weight: 500; }
+.gaveta-decisao .acoes button { flex: 1 1 0; }
+.gaveta-corpo h3 { margin: 18px 0 8px; font-size: 0.85rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.03em; }
+
+.condicoes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.condicoes li { border: 1px solid var(--borda); border-left: 4px solid var(--borda); border-radius: 8px; padding: 10px 12px; }
+.condicoes li.estado-recusado { border-left-color: var(--recusado); }
+.condicoes li.estado-manual { border-left-color: var(--manual); }
+.condicoes li.estado-aprovado { border-left-color: var(--aprovado); }
+.condicoes li.estado-invalido { border-left-color: var(--invalido); }
+.condicao-topo { display: flex; align-items: center; gap: 8px; }
+.condicao-topo strong { flex: 1; min-width: 0; }
+.condicao-decisao { font-size: 0.72rem; color: var(--texto-suave); white-space: nowrap; }
+.condicoes p { margin: 6px 0 0; }
+
+.lista-dados { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: 0.9rem; }
+.lista-dados dt { color: var(--texto-suave); }
+.lista-dados dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+.historico { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.historico li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.historico small { color: var(--texto-suave); }
+.historico p { margin: 0; width: 100%; font-size: 0.9rem; }
+
+/* =========================================================================
+   Responsivo
+   ========================================================================= */
+
+/* Tablet: formulário e resultado um por baixo do outro */
+@media (max-width: 900px) {
+  .colunas { grid-template-columns: 1fr; }
+}
+
+/* Tabela -> cartões compactos (2 colunas) quando deixa de caber */
+@media (max-width: 760px) {
+  .tabela-pedidos thead { display: none; }
+  .tabela-pedidos, .tabela-pedidos tbody { display: block; width: 100%; }
+  .tabela-pedidos tr {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px;
+    border: 1px solid var(--borda); border-radius: 8px; padding: 12px; margin-bottom: 10px;
+  }
+  .tabela-pedidos td { display: flex; flex-direction: column; gap: 2px; padding: 0; border: none; white-space: normal; min-width: 0; }
+  .tabela-pedidos td::before { content: attr(data-rotulo); color: var(--texto-suave); font-size: 0.75rem; }
+  .tabela-pedidos td .etiqueta { align-self: flex-start; }
+  .tabela-pedidos td.celula-numero {
+    grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px;
+    font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--borda);
+  }
+  .tabela-pedidos td.celula-numero::before { display: none; }
+  .tabela-pedidos td.celula-numero .etiqueta-cenario, .tabela-pedidos td.celula-numero .simulacao { margin-left: 0; }
+  .tabela-pedidos td.celula-acao { grid-column: 1 / -1; padding-top: 8px; border-top: 1px solid var(--borda); }
+  .tabela-pedidos td.celula-acao::before { display: none; }
+  .tabela-pedidos td.celula-acao:empty { display: none; }
+  .tabela-pedidos td.celula-acao button { width: 100%; justify-content: center; }
+  .botao-regras .rotulo-regras { display: inline; margin-right: auto; color: var(--texto); }
+  .botao-regras .texto-detalhes { display: none; }
+}
+
+/* Telemóvel */
+@media (max-width: 520px) {
+  .pagina { padding: 16px 12px 32px; }
+  header h1 { font-size: 1.3rem; margin-bottom: 14px; }
+  .cartao { padding: 16px; }
+  .grelha { grid-template-columns: 1fr; }
+  .campo input, .campo select, .campo textarea { font-size: 16px; } /* evita o zoom automático no iPhone */
+  .acoes button { flex: 1 1 0; }
+  .resultado-cabecalho h2 { font-size: 1.4rem; }
+  .selo { display: none; }
+  .indicadores { grid-template-columns: 1fr; }
+  .motivos li { align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gaveta, .gaveta-fundo { transition: none; }
+}

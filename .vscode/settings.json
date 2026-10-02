@@ -1,0 +1,18 @@
+{
+  "dotnet.defaultSolution": "AnaliseCredito.slnx",
+  "files.encoding": "utf8",
+  "editor.formatOnSave": false,
+  "mssql.connections": [
+    {
+      "profileName": "AnaliseCredito (Docker)",
+      "server": "localhost,1433",
+      "database": "AnaliseCredito",
+      "authenticationType": "SqlLogin",
+      "user": "sa",
+      "password": "",
+      "savePassword": true,
+      "trustServerCertificate": true,
+      "encrypt": "Mandatory"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. SQL Server (Docker) - arrancar",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "problemMatcher": []
+    },
+    {
+      "label": "build-api",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/backend/AnaliseCredito.Api.csproj"],
+      "problemMatcher": "$msCompile",
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "2. API - executar",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["run", "--project", "${workspaceFolder}/backend"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "3. Frontend - instalar dependências",
+      "type": "shell",
+      "command": "npm install",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "4. Frontend - executar",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Testes - executar",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["test", "${workspaceFolder}/AnaliseCredito.slnx"],
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
