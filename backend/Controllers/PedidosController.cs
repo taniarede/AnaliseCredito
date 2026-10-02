@@ -12,7 +12,7 @@ public sealed class PedidosController(IAvaliacaoService avaliacao, IPedidosServi
     [HttpPost]
     public async Task<ActionResult<PedidoResponseDTO>> Submeter(PedidoRequestDTO request, CancellationToken ct)
     {
-        var resposta = await avaliacao.AvaliarAsync(request, ehSimulacao: false, ct);
+        var resposta = await avaliacao.AvaliarAsync(request, ct);
         return CreatedAtAction(nameof(Obter), new { id = resposta.Id }, resposta);
     }
 

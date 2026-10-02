@@ -28,6 +28,7 @@ builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IAvaliacaoService, AvaliacaoService>();
 builder.Services.AddScoped<IPedidosService, PedidosService>();
 builder.Services.AddScoped<IAnaliseManualService, AnaliseManualService>();
+builder.Services.AddScoped<ISimulacoesService, SimulacoesService>();
 
 builder.Services
     .AddControllers()

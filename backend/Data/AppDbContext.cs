@@ -12,6 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PedidoCredito> PedidosCredito => Set<PedidoCredito>();
     public DbSet<MotivoDecisao> MotivosDecisao => Set<MotivoDecisao>();
     public DbSet<HistoricoEstado> HistoricoEstados => Set<HistoricoEstado>();
+    public DbSet<Simulacao> Simulacoes => Set<Simulacao>();
 
     public IQueryable<PedidoCredito> PedidosCompletos() =>
         PedidosCredito
@@ -88,6 +89,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(h => h.DataAlteracao).HasColumnType("datetime2(0)");
             e.Property(h => h.Utilizador).HasMaxLength(100).IsRequired();
             e.Property(h => h.Observacao).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<Simulacao>(e =>
+        {
+            e.ToTable("Simulacoes");
+            e.HasKey(s => s.Id);
+            e.Property(s => s.NifSubmetido).HasMaxLength(20).IsRequired();
+            e.Property(s => s.RendimentoMensalLiquido).HasPrecision(18, 2);
+            e.Property(s => s.PrestacoesAtuais).HasPrecision(18, 2);
+            e.Property(s => s.ValorPretendido).HasPrecision(18, 2);
+            e.Property(s => s.SituacaoProfissional).HasMaxLength(30).IsRequired();
+            e.Property(s => s.PrestacaoEstimada).HasPrecision(18, 2);
+            e.Property(s => s.TaxaEsforco).HasPrecision(18, 2);
+            e.Property(s => s.IdadeFinalContrato).HasPrecision(18, 2);
+            e.Property(s => s.Decisao).HasColumnName("DecisaoId");   // TINYINT = Id da tabela Estados
+            e.Property(s => s.CodigosRegras).HasColumnType("varchar(100)");
+            e.Property(s => s.VersaoRegras).HasColumnType("varchar(10)").IsRequired();
+            e.Property(s => s.DataSimulacao).HasColumnType("datetime2(0)");
         });
     }
 }

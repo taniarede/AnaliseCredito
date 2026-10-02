@@ -21,10 +21,10 @@ AnaliseCredito/
 │   ├── appsettings.json                Connection string e limites das regras
 │   ├── AnaliseCredito.Api.http         Pedidos de teste prontos a enviar
 │   ├── Controllers/                    PedidosController, SimulacoesController, AnaliseManualController
-│   ├── Services/                       AvaliacaoService, PedidosService, AnaliseManualService, ClienteService
+│   ├── Services/                       AvaliacaoService, PedidosService, SimulacoesService, AnaliseManualService, ClienteService
 │   ├── Interfaces/                     IRegraCredito + uma interface por service
 │   ├── DTOs/                           Um ficheiro por DTO (…DTO.cs)
-│   ├── Models/                         Tabelas (Cliente, PedidoCredito…) e modelos das regras
+│   ├── Models/                         Tabelas (Cliente, PedidoCredito, Simulacao…) e modelos das regras
 │   ├── Enums/                          EstadoPedidoEnum, SituacaoProfissionalEnum
 │   ├── Regras/                         Regra01 … Regra07, PrioridadeDecisao (Regra 8), ParametrosCredito
 │   └── Data/                           AppDbContext (EF Core) e criação automática da BD
@@ -37,8 +37,8 @@ AnaliseCredito/
 ├── database/
 │   ├── 01-create-database.sql          Cria a base de dados
 │   ├── 02-create-tables.sql            Tabelas, índices, estados e regras
-│   ├── 03-seed-data.sql                12 pedidos de exemplo (20260001–20260004 = Cenários A–D)
-│   └── 04-queries-tarefa4.sql          As 5 queries da Tarefa 4
+│   ├── 03-seed-data.sql                11 pedidos (20260001–20260004 = Cenários A–D) e 1 simulação
+│   └── 04-queries-tarefa4.sql          As 5 queries da Tarefa 4 + contagem de simulações
 │
 └── tests/
     └── AnaliseCredito.Tests/           Testes das regras (cenários A–D, limites, NIF)
@@ -128,7 +128,9 @@ Para confirmar, abra http://localhost:5080/swagger. É uma página onde pode exp
 
 ### Passo 5 — Usar a aplicação
 - Ao abrir, o cartão de resultado mostra o **Cenário A**. Os Cenários A–D estão na lista de pedidos (20260001 a 20260004), com a etiqueta *Cenário A/B/C/D*.
-- Preencha o **Novo pedido** e clique em **Simular** (grava marcado como simulação) ou **Submeter pedido** (grava como pedido real).
+- Preencha o **Novo pedido** e clique em **Simular** ou **Submeter pedido**.
+  - **Simular** grava na tabela `Simulacoes`, só para contagem (sem estado nem histórico). O resultado aparece no cartão, sem número de pedido nem o selo *Decisão final*, e não entra na lista de pedidos.
+  - **Submeter pedido** grava um pedido real, que aparece na lista.
 - O cartão de resultado mostra a **decisão final**, os **motivos** e os **indicadores**.
 - Se o pedido for **inválido**, os campos com erro ficam vazios e a vermelho; os campos corretos mantêm-se.
 - Na lista, a coluna **Ação / Regras** abre um painel lateral com os detalhes de cada pedido. Nos pedidos em **ANÁLISE MANUAL**, o botão **Decidir** abre esse painel com a decisão do analista (nome e observação obrigatórios, com confirmação). A mudança fica no histórico, e é isso que a query 5 da Tarefa 4 conta.
@@ -216,7 +218,7 @@ Para debug da API, carregue em **F5**.
 | POST | `/api/pedidos` | Avaliar e gravar um pedido |
 | GET | `/api/pedidos?top=50` | Últimos pedidos |
 | GET | `/api/pedidos/{id}` | Detalhe de um pedido |
-| POST | `/api/simulacoes` | Avaliar e gravar como simulação |
+| POST | `/api/simulacoes` | Avaliar e gravar uma simulação (tabela `Simulacoes`, só para contagem) |
 | GET | `/api/analise-manual/pendentes` | Pedidos à espera do analista |
 | POST | `/api/analise-manual/{id}/decisao` | Aprovar ou recusar um pedido em Análise Manual |
 

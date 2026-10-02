@@ -8,7 +8,7 @@ namespace AnaliseCredito.Api.Services;
 
 // Avaliação de um pedido: pede a decisão às regras (PrioridadeDecisao), grava o pedido,
 // os motivos e o primeiro registo de histórico, e devolve a resposta.
-// É usado tanto para pedidos como para simulações (a diferença é só a marca Simulacao).
+// As simulações têm o seu próprio service (SimulacoesService) e a sua própria tabela.
 public sealed class AvaliacaoService(
     AppDbContext db,
     PrioridadeDecisao regras,
@@ -17,7 +17,7 @@ public sealed class AvaliacaoService(
 {
     public const string UtilizadorSistema = "SISTEMA";
 
-    public async Task<PedidoResponseDTO> AvaliarAsync(PedidoRequestDTO request, bool ehSimulacao, CancellationToken ct)
+    public async Task<PedidoResponseDTO> AvaliarAsync(PedidoRequestDTO request, CancellationToken ct)
     {
         var input = request.ParaModelo();
         var resultado = regras.Avaliar(input);
@@ -35,7 +35,6 @@ public sealed class AvaliacaoService(
             PrazoMeses = input.PrazoMeses,
             SituacaoProfissional = input.SituacaoProfissional,
             IncidentesCredito = input.IncidentesCredito,
-            EhSimulacao = ehSimulacao,
             PrestacaoEstimada = resultado.Indicadores?.PrestacaoEstimada,
             TaxaEsforco = resultado.Indicadores?.TaxaEsforco,
             IdadeFinalContrato = resultado.Indicadores?.IdadeFinalContrato,
@@ -60,7 +59,7 @@ public sealed class AvaliacaoService(
                     EstadoNovo = resultado.Decisao,
                     DataAlteracao = agora,
                     Utilizador = UtilizadorSistema,
-                    Observacao = ehSimulacao ? "Simulação - decisão automática" : "Decisão automática do motor de regras"
+                    Observacao = "Decisão automática do motor de regras"
                 }
             ]
         };

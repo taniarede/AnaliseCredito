@@ -98,7 +98,6 @@ h2.estado-invalido, .resultado.estado-invalido h2 { color: var(--invalido); }
 .tabela-pedidos th, .tabela-pedidos td { text-align: left; padding: 8px; border-bottom: 1px solid var(--borda); white-space: nowrap; }
 .tabela-pedidos th { color: var(--texto-suave); font-weight: 600; }
 .tabela-pedidos td { font-variant-numeric: tabular-nums; }
-.simulacao { margin-left: 6px; color: var(--texto-suave); }
 
 .botao-regras {
   display: inline-flex; align-items: center; gap: 4px; background: #fff; border: 1px solid var(--borda);
@@ -189,7 +188,7 @@ h2.estado-invalido, .resultado.estado-invalido h2 { color: var(--invalido); }
     font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--borda);
   }
   .tabela-pedidos td.celula-numero::before { display: none; }
-  .tabela-pedidos td.celula-numero .etiqueta-cenario, .tabela-pedidos td.celula-numero .simulacao { margin-left: 0; }
+  .tabela-pedidos td.celula-numero .etiqueta-cenario { margin-left: 0; }
   .tabela-pedidos td.celula-acao { grid-column: 1 / -1; padding-top: 8px; border-top: 1px solid var(--borda); }
   .tabela-pedidos td.celula-acao::before { display: none; }
   .tabela-pedidos td.celula-acao:empty { display: none; }

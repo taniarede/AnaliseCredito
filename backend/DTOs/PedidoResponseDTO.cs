@@ -8,7 +8,6 @@ namespace AnaliseCredito.Api.DTOs;
 public sealed record PedidoResponseDTO(
     int Id,
     string NumeroPedido,
-    bool EhSimulacao,
     DateTime DataPedido,
     EstadoPedidoEnum DecisaoAutomatica,
     EstadoPedidoEnum EstadoAtual,
@@ -30,7 +29,6 @@ public sealed record PedidoResponseDTO(
         return new PedidoResponseDTO(
             p.Id,
             p.NumeroPedido,
-            p.EhSimulacao,
             DateTime.SpecifyKind(p.DataPedido, DateTimeKind.Utc),
             p.EstadoAutomatico,
             p.EstadoAtual,

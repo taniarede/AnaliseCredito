@@ -2,7 +2,7 @@ using AnaliseCredito.Api.Enums;
 
 namespace AnaliseCredito.Api.Models;
 
-// Tabela dbo.PedidosCredito - um pedido ou uma simulação
+// Tabela dbo.PedidosCredito - um pedido (as simulações estão na tabela dbo.Simulacoes)
 // Os dados de entrada ficam guardados tal como foram submetidos (NULL = campo não preenchido).
 public class PedidoCredito
 {
@@ -24,7 +24,6 @@ public class PedidoCredito
     public int? PrazoMeses { get; set; }
     public string SituacaoProfissional { get; set; } = string.Empty;
     public bool IncidentesCredito { get; set; }
-    public bool EhSimulacao { get; set; }
 
     // Indicadores (NULL em pedidos inválidos)
     public decimal? PrestacaoEstimada { get; set; }

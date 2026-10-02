@@ -10,6 +10,7 @@
      PedidosCredito    -> dados submetidos + indicadores calculados + estado
      MotivosDecisao    -> um registo por motivo (permite estatísticas por regra)
      HistoricoEstados  -> todas as mudanças de estado (auditoria e query "Manual -> Aprovado")
+     Simulacoes        -> simulações (só para contagem: sem estado atual nem histórico)
    ============================================================================= */
 
 USE AnaliseCredito;
@@ -78,7 +79,6 @@ CREATE TABLE dbo.PedidosCredito
     PrazoMeses              INT            NULL,
     SituacaoProfissional    NVARCHAR(30)   NOT NULL,
     IncidentesCredito       BIT            NOT NULL,
-    EhSimulacao             BIT            NOT NULL CONSTRAINT DF_Pedidos_EhSimulacao DEFAULT (0),
     PrestacaoEstimada       DECIMAL(18,2)  NULL,
     TaxaEsforco             DECIMAL(18,2)  NULL,
     IdadeFinalContrato      DECIMAL(18,2)  NULL,
@@ -94,7 +94,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Pedidos_ClienteId_Dat
     CREATE INDEX IX_Pedidos_ClienteId_DataPedido ON dbo.PedidosCredito (ClienteId, DataPedido);
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Pedidos_EstadoAtualId')
-    CREATE INDEX IX_Pedidos_EstadoAtualId ON dbo.PedidosCredito (EstadoAtualId) INCLUDE (EhSimulacao);
+    CREATE INDEX IX_Pedidos_EstadoAtualId ON dbo.PedidosCredito (EstadoAtualId);
 GO
 
 /* ---------------------------------------------------------------------------
@@ -135,6 +135,40 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Historico_PedidoId')
     CREATE INDEX IX_Historico_PedidoId ON dbo.HistoricoEstados (PedidoId);
+GO
+
+/* ---------------------------------------------------------------------------
+   Simulacoes - uma linha por simulação, só para contagem
+   - Mesmos dados de entrada e indicadores de um pedido, e a decisão do motor.
+   - Sem estado atual, sem histórico e sem motivos em tabela própria:
+     uma simulação nunca muda e não pode ser decidida por um analista.
+   - Sem ClienteId: uma simulação não cria cliente; o NIF fica como foi escrito.
+   - CodigosRegras = regras que dispararam, separadas por vírgula (ex.: 'R4,R6').
+   --------------------------------------------------------------------------- */
+IF OBJECT_ID(N'dbo.Simulacoes', N'U') IS NULL
+CREATE TABLE dbo.Simulacoes
+(
+    Id                      INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Simulacoes PRIMARY KEY,
+    NifSubmetido            NVARCHAR(20)   NOT NULL,
+    Idade                   INT            NULL,
+    RendimentoMensalLiquido DECIMAL(18,2)  NULL,
+    PrestacoesAtuais        DECIMAL(18,2)  NULL,
+    ValorPretendido         DECIMAL(18,2)  NULL,
+    PrazoMeses              INT            NULL,
+    SituacaoProfissional    NVARCHAR(30)   NOT NULL,
+    IncidentesCredito       BIT            NOT NULL,
+    PrestacaoEstimada       DECIMAL(18,2)  NULL,
+    TaxaEsforco             DECIMAL(18,2)  NULL,
+    IdadeFinalContrato      DECIMAL(18,2)  NULL,
+    DecisaoId               TINYINT        NOT NULL CONSTRAINT FK_Simulacoes_Estados REFERENCES dbo.Estados(Id),
+    CodigosRegras           VARCHAR(100)   NULL,
+    VersaoRegras            VARCHAR(10)    NOT NULL,
+    DataSimulacao           DATETIME2(0)   NOT NULL CONSTRAINT DF_Simulacoes_Data DEFAULT SYSUTCDATETIME()
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Simulacoes_DataSimulacao')
+    CREATE INDEX IX_Simulacoes_DataSimulacao ON dbo.Simulacoes (DataSimulacao) INCLUDE (NifSubmetido, DecisaoId);
 GO
 
 /* ---------------------------------------------------------------------------

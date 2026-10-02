@@ -45,7 +45,7 @@ export function PainelDetalhes({ pedido, onFechar, onDecidir }: Props) {
 
   const dadosCompletos = utilizador.trim() !== '' && observacao.trim() !== '';
 
-  const podeDecidir = pedido !== null && pedido.estadoAtual === 'AnaliseManual' && !pedido.ehSimulacao;
+  const podeDecidir = pedido !== null && pedido.estadoAtual === 'AnaliseManual';
 
   const confirmar = async () => {
     if (!pedido || !aConfirmar) return;

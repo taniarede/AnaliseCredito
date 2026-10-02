@@ -50,7 +50,6 @@ export function ListaPedidos({ pedidos, onSelecionar, onVerDetalhes, onAtualizar
                     <button type="button" className="ligacao" onClick={() => onSelecionar(p)}>
                       {p.numeroPedido}
                     </button>
-                    {p.ehSimulacao && <small className="simulacao">simulação</small>}
                     {cenario && <span className="etiqueta etiqueta-cenario">Cenário {cenario}</span>}
                   </td>
                   <td data-rotulo="Data">{formatarData(p.dataPedido)}</td>
@@ -68,7 +67,7 @@ export function ListaPedidos({ pedidos, onSelecionar, onVerDetalhes, onAtualizar
                     <span className={`etiqueta ${classeEstado[p.estadoAtual]}`}>{p.estadoAtualDescricao}</span>
                   </td>
                   <td data-rotulo="Ação / Regras" className="celula-acao">
-                    {p.estadoAtual === 'AnaliseManual' && !p.ehSimulacao ? (
+                    {p.estadoAtual === 'AnaliseManual' ? (
                       <button type="button" className="botao-secundario botao-decidir" onClick={() => onVerDetalhes(p)}>
                         Decidir
                       </button>

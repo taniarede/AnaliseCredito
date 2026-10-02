@@ -1,23 +1,34 @@
-import type { PedidoResponse } from '../types';
+import { ehSimulacao, type Resultado } from '../types';
 import { identificarCenario } from '../cenarios';
 import { classeEstado, formatarEuros, formatarIdadeFinal, formatarNumero } from '../formatacao';
 
-/** Apresenta o resultado no formato pedido pelo enunciado: decisão final, motivos e indicadores. */
-export function ResultadoDecisao({ resultado }: { resultado: PedidoResponse }) {
+/**
+ * Apresenta o resultado no formato pedido pelo enunciado: decisão final, motivos e indicadores.
+ * Num pedido mostra também o número (e o cenário) e o selo "Decisão final".
+ * Numa simulação mostra a etiqueta "Simulação" no lugar do número e não mostra o selo.
+ */
+export function ResultadoDecisao({ resultado }: { resultado: Resultado }) {
   const { indicadores } = resultado;
-  const cenario = identificarCenario(resultado.dados);
+  const simulacao = ehSimulacao(resultado);
+  const estado = simulacao ? resultado.decisao : resultado.estadoAtual;
+  const descricao = simulacao ? resultado.decisaoDescricao : resultado.estadoAtualDescricao;
+  const cenario = simulacao ? null : identificarCenario(resultado.dados);
 
   return (
-    <section className={`cartao resultado ${classeEstado[resultado.estadoAtual]}`}>
+    <section className={`cartao resultado ${classeEstado[estado]}`}>
       <div className="resultado-cabecalho">
         <div>
-          <small>
-            {resultado.ehSimulacao ? 'Simulação' : 'Pedido'} n.º {resultado.numeroPedido}
-            {cenario && ` · Cenário ${cenario}`}
-          </small>
-          <h2>{resultado.estadoAtualDescricao}</h2>
+          {simulacao ? (
+            <small>Simulação</small>
+          ) : (
+            <small>
+              Pedido n.º {resultado.numeroPedido}
+              {cenario && ` · Cenário ${cenario}`}
+            </small>
+          )}
+          <h2>{descricao}</h2>
         </div>
-        <span className="selo">Decisão final</span>
+        {!simulacao && <span className="selo">Decisão final</span>}
       </div>
 
       <h3>Motivos da decisão</h3>
@@ -55,7 +66,9 @@ export function ResultadoDecisao({ resultado }: { resultado: PedidoResponse }) {
           </div>
         </dl>
       ) : (
-        <p className="sem-motivos">Não calculados: o pedido não passou a validação inicial.</p>
+        <p className="sem-motivos">
+          Não calculados: {simulacao ? 'a simulação' : 'o pedido'} não passou a validação inicial.
+        </p>
       )}
     </section>
   );

@@ -1,4 +1,4 @@
-import type { DecisaoAnalistaRequest, PedidoRequest, PedidoResponse } from './types';
+import type { DecisaoAnalistaRequest, PedidoRequest, PedidoResponse, SimulacaoResponse } from './types';
 
 // Chamadas à API. O Vite reencaminha /api para http://localhost:5080 (ver vite.config.ts).
 
@@ -37,7 +37,7 @@ async function lerErro(resposta: Response): Promise<string> {
 
 export const api = {
   simular: (pedido: PedidoRequest) =>
-    pedidoHttp<PedidoResponse>('/api/simulacoes', { method: 'POST', body: JSON.stringify(pedido) }),
+    pedidoHttp<SimulacaoResponse>('/api/simulacoes', { method: 'POST', body: JSON.stringify(pedido) }),
 
   submeter: (pedido: PedidoRequest) =>
     pedidoHttp<PedidoResponse>('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) }),

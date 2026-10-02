@@ -46,7 +46,6 @@ export interface Historico {
 export interface PedidoResponse {
   id: number;
   numeroPedido: string;
-  ehSimulacao: boolean;
   dataPedido: string;
   decisaoAutomatica: EstadoPedido;
   estadoAtual: EstadoPedido;
@@ -56,6 +55,23 @@ export interface PedidoResponse {
   dados: PedidoRequest;
   historico: Historico[];
 }
+
+/** Resposta de POST /api/simulacoes: sem número de pedido, estado atual nem histórico. */
+export interface SimulacaoResponse {
+  id: number;
+  dataSimulacao: string;
+  decisao: EstadoPedido;
+  decisaoDescricao: string;
+  motivos: Motivo[];
+  indicadores: Indicadores | null;
+  dados: PedidoRequest;
+}
+
+/** O que o cartão de resultado pode mostrar: um pedido ou uma simulação. */
+export type Resultado = PedidoResponse | SimulacaoResponse;
+
+/** Uma simulação não tem número de pedido. */
+export const ehSimulacao = (r: Resultado): r is SimulacaoResponse => !('numeroPedido' in r);
 
 export interface DecisaoAnalistaRequest {
   novoEstado: 'Aprovado' | 'Recusado';

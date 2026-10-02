@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from './api';
-import type { CampoPedido, DecisaoAnalistaRequest, PedidoRequest, PedidoResponse } from './types';
+import { ehSimulacao, type CampoPedido, type DecisaoAnalistaRequest, type PedidoRequest, type PedidoResponse, type Resultado } from './types';
 import { FormularioPedido, type ErrosFormulario } from './components/FormularioPedido';
 import { identificarCenario } from './cenarios';
 import { ResultadoDecisao } from './components/ResultadoDecisao';
@@ -8,7 +8,7 @@ import { ListaPedidos } from './components/ListaPedidos';
 import { PainelDetalhes } from './components/PainelDetalhes';
 
 export default function App() {
-  const [resultado, setResultado] = useState<PedidoResponse | null>(null);
+  const [resultado, setResultado] = useState<Resultado | null>(null);
   const [pedidos, setPedidos] = useState<PedidoResponse[]>([]);
   const [erro, setErro] = useState<string | null>(null);
   const [aProcessar, setAProcessar] = useState(false);
@@ -37,12 +37,14 @@ export default function App() {
     try {
       const resposta = simulacao ? await api.simular(pedido) : await api.submeter(pedido);
       setResultado(resposta);
-      if (resposta.estadoAtual === 'PedidoInvalido') {
+      const estado = ehSimulacao(resposta) ? resposta.decisao : resposta.estadoAtual;
+      if (estado === 'PedidoInvalido') {
         // Campos com erro (Regra 1): o formulário apaga-os e rodeia-os a vermelho
         const campos = resposta.motivos.map((m) => m.campo).filter((c): c is CampoPedido => c !== null);
-        setErros({ id: resposta.id, campos });
+        setErros({ id: Date.now(), campos });
       }
-      await carregarPedidos();
+      // A lista só muda quando é um pedido (as simulações não aparecem na lista)
+      if (!simulacao) await carregarPedidos();
     } catch (e) {
       setErro((e as Error).message);
     } finally {

@@ -217,6 +217,11 @@ public class PrioridadeDecisaoTests
     [InlineData(4201.20, 35.01, EstadoPedidoEnum.AnaliseManual)]
     [InlineData(6000.00, 50.00, EstadoPedidoEnum.AnaliseManual)]
     [InlineData(6001.20, 50.01, EstadoPedidoEnum.Recusado)]
+    // Fronteira do arredondamento: compara-se a taxa já arredondada a 2 casas (AwayFromZero)
+    [InlineData(4200.48, 35.00, EstadoPedidoEnum.Aprovado)]       // 35,004% -> 35,00%
+    [InlineData(4200.60, 35.01, EstadoPedidoEnum.AnaliseManual)]  // 35,005% -> 35,01%
+    [InlineData(6000.48, 50.00, EstadoPedidoEnum.AnaliseManual)]  // 50,004% -> 50,00%
+    [InlineData(6000.60, 50.01, EstadoPedidoEnum.Recusado)]       // 50,005% -> 50,01%
     public void Regra6_Limites(double valor, double taxaEsperada, EstadoPedidoEnum esperado)
     {
         var r = _motor.Avaliar(PedidoBase(rendimento: 1000, prestacoes: 0, valor: (decimal)valor, prazo: 12));
@@ -250,5 +255,40 @@ public class PrioridadeDecisaoTests
 
         Assert.Equal(EstadoPedidoEnum.Recusado, r.Decisao);
         Assert.Equal(new[] { "R3", "R7" }, Regras(r));
+    }
+
+    [Fact]
+    public void Regra8_DoisMotivosManual_ContinuaAnaliseManual()
+    {
+        // T22 - idade final 77 (R2) + contrato a prazo (R4): dois Manual não fazem um Recusado
+        var r = _motor.Avaliar(PedidoBase(idade: 72, situacao: "ContratoPrazo"));
+
+        Assert.Equal(EstadoPedidoEnum.AnaliseManual, r.Decisao);
+        Assert.Equal(new[] { "R2", "R4" }, Regras(r));
+    }
+
+    [Fact]
+    public void Regra8_TresMotivosRecusa_Recusado()
+    {
+        // T23 - incidentes (R3) + desempregado (R4) + taxa 61,11% (R6)
+        var r = _motor.Avaliar(PedidoBase(rendimento: 600, situacao: "Desempregado", incidentes: true));
+
+        Assert.Equal(EstadoPedidoEnum.Recusado, r.Decisao);
+        Assert.Equal(new[] { "R3", "R4", "R6" }, Regras(r));
+        Assert.Equal(61.11m, r.Indicadores!.TaxaEsforco);
+        Assert.All(r.Motivos, m => Assert.Equal(EstadoPedidoEnum.Recusado, m.Decisao));
+    }
+
+    [Fact]
+    public void Regra8_DoisManualEUmRecusado_Recusado()
+    {
+        // T25 - incidentes (R3 Recusado) + contrato a prazo (R4 Manual) + 60.000 € (R7 Manual).
+        // O limite de 20x (80.000 €) não dispara.
+        var r = _motor.Avaliar(PedidoBase(idade: 40, rendimento: 4000, prestacoes: 0, valor: 60000, prazo: 120,
+            situacao: "ContratoPrazo", incidentes: true));
+
+        Assert.Equal(EstadoPedidoEnum.Recusado, r.Decisao);
+        Assert.Equal(new[] { "R3", "R4", "R7" }, Regras(r));
+        Assert.Equal(12.50m, r.Indicadores!.TaxaEsforco);
     }
 }

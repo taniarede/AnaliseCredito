@@ -19,7 +19,7 @@ public sealed class AnaliseManualService(AppDbContext db, PrioridadeDecisao regr
     public async Task<IReadOnlyList<PedidoResponseDTO>> ListarPendentesAsync(CancellationToken ct)
     {
         var pedidos = await db.PedidosCompletos()
-            .Where(p => p.EstadoAtual == EstadoPedidoEnum.AnaliseManual && !p.EhSimulacao)
+            .Where(p => p.EstadoAtual == EstadoPedidoEnum.AnaliseManual)
             .OrderBy(p => p.DataPedido)
             .ToListAsync(ct);
 
@@ -39,9 +39,6 @@ public sealed class AnaliseManualService(AppDbContext db, PrioridadeDecisao regr
         var pedido = await db.PedidosCompletos().FirstOrDefaultAsync(p => p.Id == id, ct);
         if (pedido is null)
             return null;
-
-        if (pedido.EhSimulacao)
-            throw new InvalidOperationException("Uma simulação não pode ser decidida por um analista.");
 
         if (pedido.EstadoAtual != EstadoPedidoEnum.AnaliseManual)
             throw new InvalidOperationException(
